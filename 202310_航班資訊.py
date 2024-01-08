@@ -27,13 +27,25 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import time
+###################Chrome有頭爬蟲##########################################################
 s = Service(r"C:\chromedriver\chromedriver.exe")  # 驅動器位置(需確認chromedriver.exe放置的位置)
 option = webdriver.ChromeOptions()
 #option.add_argument("headless")  ##執行爬蟲時不開啟瀏覽器
-
+prefs = {
+    'profile.default_content_setting_values':{
+        'notifications':2
+    }
+}##2024/01/03出現通知許可時，設定為拒絕
 driver = webdriver.Chrome(service=s, options=option)
-#driver.maximize_window() ##網頁全展畫面
-
+##################firefox無頭爬蟲############################################
+# s = Service("C:/geckodriver/geckodriver.exe")
+# option = webdriver.FirefoxOptions()
+# option.add_argument(argument="--headless")  ##執行爬蟲時不開啟瀏覽器
+# option.add_argument(argument="--no-sandbox")#2024/1/8不開瀏覽器爬蟲須追加
+# option.add_argument(argument='--disable-gpu')#2024/1/8不開瀏覽器爬蟲須追加
+# option.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")##避免被視為機器人
+# driver = webdriver.Firefox(service=s, options=option)
+##########################################################
 url = "https://www.google.com/travel/flights/search?tfs=CBwQAhooEgoyMDI0LTAyLTA4agwIAxIIL20vMGZ0a3hyDAgDEggvbS8wZ3FmeRooEgoyMDI0LTAyLTEwagwIAxIIL20vMGdxZnlyDAgDEggvbS8wZnRreEABSAFwAYIBCwj___________8BmAEB&hl=zh-TW&gl=tw&curr=TWD"
 driver.get(url)
 driver.implicitly_wait(20)

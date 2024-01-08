@@ -53,13 +53,25 @@ from selenium.webdriver.common.by import By
 import time
 #############################################
 hotel_not_score = ["飯店","京都","沖繩","酒店"]
-######################################################################################
+###################Chrome有頭爬蟲##########################################################
 s = Service(r"C:\chromedriver\chromedriver.exe")  # 驅動器位置(需確認chromedriver.exe放置的位置)
 option = webdriver.ChromeOptions()
 #option.add_argument("headless")  ##執行爬蟲時不開啟瀏覽器
-
+prefs = {
+    'profile.default_content_setting_values':{
+        'notifications':2
+    }
+}##2024/01/03出現通知許可時，設定為拒絕
 driver = webdriver.Chrome(service=s, options=option)
-driver.implicitly_wait(20)
+driver.implicitly_wait(4)
+##################firefox無頭爬蟲############################################
+# s = Service("C:/geckodriver/geckodriver.exe")
+# option = webdriver.FirefoxOptions()
+# option.add_argument(argument="--headless")  ##執行爬蟲時不開啟瀏覽器
+# option.add_argument(argument="--no-sandbox")#2024/1/8不開瀏覽器爬蟲須追加
+# option.add_argument(argument='--disable-gpu')#2024/1/8不開瀏覽器爬蟲須追加
+# option.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")##避免被視為機器人
+# driver = webdriver.Firefox(service=s, options=option)
 ###################################################
 from openpyxl import Workbook
 
@@ -78,12 +90,7 @@ time.sleep(5)
 
 def scroll_times(times):
     for scrolltime in range(0,times+1):
-        #driver.implicitly_wait(15)
-        #print("scroll ",scrolltime+1," times.")
-        click_to_scroll=driver.find_element(By.XPATH, "//div[@id='QA0Szd']/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]")
-        #/html/body/div[3]/div[8]/div[9]/div/div/div[1]/div[2]/div/div[1]
-        #driver.execute_script("arguments[0].click();", click_to_scroll)
-        #print("scrolling...")
+        click_to_scroll=driver.find_element(By.XPATH, "/html/body/div[2]/div[3]/div[8]/div[9]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]")##2023/12/31更換路徑
         click_to_scroll.send_keys(Keys.END)
         time.sleep(7)
 scroll_times(5)
@@ -124,7 +131,6 @@ for add1 in range(len(hotel_name)):
         HT_web_list.append(str(hotel_web[add1].get_attribute('href')))
     else:
         continue
-#print(HT_web_list)
 #####################細部抓取#########################################
 
 fullItem = []
@@ -139,24 +145,23 @@ find_orderN = "//div[@class='m6QErb ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a
 #find_orderWeb= "//div[@class='m6QErb ']/div[5]/div[2]/div/div[2]/div/div/a"
 find_orderWeb= "//div[@class='m6QErb ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a"
 ####
-find_address1 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[3]/button/div/div[2]/div[1]"
-find_address2 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[4]/button/div/div[2]/div[1]"
-find_address3 = "//div[@class='m6QErb WNBkOb ']/div[17]/div[3]/button/div/div[2]/div[1]"
+find_address1 = "//div[@class='m6QErb WNBkOb ']/div[11]/div[3]/button/div/div[2]/div[1]"##01/07新位置
+find_address2 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[3]/button/div/div[2]/div[1]"
+find_address3 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[4]/button/div/div[2]/div[1]"
+find_address4 = "//div[@class='m6QErb WNBkOb ']/div[17]/div[3]/button/div/div[2]/div[1]"
 ####
-find_checkIn_checkOut1 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[10]/div[1]/div[2]/div[1]"
-find_checkIn_checkOut2 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[9]/div[1]/div[2]/div[1]"
-find_checkIn_checkOut3 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[8]/div[1]/div[2]/div[1]"
+find_checkIn_checkOut1 = "//div[@class='m6QErb WNBkOb ']/div[11]/div[7]/div[1]/div[2]/div[1]"##01/07新位置
+find_checkIn_checkOut2 = "//div[@class='m6QErb WNBkOb ']/div[11]/div[8]/div[1]/div[2]/div[1]"##01/07新位置
+find_checkIn_checkOut3 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[10]/div[1]/div[2]/div[1]"
+find_checkIn_checkOut4 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[8]/div[1]/div[2]/div[1]"
+find_checkIn_checkOut5 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[9]/div[1]/div[2]/div[1]"
 ####
-#pick_font = "//div[@class='m6QErb WNBkOb ']/div[2]/div/div[1]/div[1]"
-#pick_font="//img[@class='Liguzb']"
 pick_font = "//div[@id='QA0Szd']/div/div/div[1]/div[2]/div/div[1]"
 rest_step_url="https://www.google.com/"
 
 def scroll_step():
     time.sleep(5)
     scroll_click=driver.find_element(By.XPATH, pick_font)
-    #driver.execute_script("window.scrollBy(0, 500);")
-    #driver.execute_script("arguments[0].click();", scroll_click)
     scroll_click.send_keys(Keys.PAGE_DOWN)
     time.sleep(5)
 for go_link in range(len(HT_web_list)):
@@ -204,7 +209,11 @@ for go_link in range(len(HT_web_list)):
                 hotelFull_address = driver.find_element(By.XPATH, find_address3)
                 hotelFull_address = hotelFull_address.text
             except NoSuchElementException:
-                hotelFull_address = "無顯示地點"
+                try:
+                    hotelFull_address = driver.find_element(By.XPATH, find_address4)
+                    hotelFull_address = hotelFull_address.text
+                except NoSuchElementException:
+                    hotelFull_address = "無顯示地點"
 
     try:
         hotelFull_checkInOut = driver.find_element(By.XPATH,find_checkIn_checkOut1)
@@ -218,7 +227,15 @@ for go_link in range(len(HT_web_list)):
                 hotelFull_checkInOut = driver.find_element(By.XPATH, find_checkIn_checkOut3)
                 hotelFull_checkInOut = hotelFull_checkInOut.text
             except NoSuchElementException:
-                hotelFull_checkInOut = "無顯示入住、退房時間"
+                try:
+                    hotelFull_checkInOut = driver.find_element(By.XPATH, find_checkIn_checkOut4)
+                    hotelFull_checkInOut = hotelFull_checkInOut.text
+                except NoSuchElementException:
+                    try:
+                        hotelFull_checkInOut = driver.find_element(By.XPATH, find_checkIn_checkOut5)
+                        hotelFull_checkInOut = hotelFull_checkInOut.text
+                    except NoSuchElementException:
+                        hotelFull_checkInOut = "無顯示入住、退房時間"
 
     Items = [hotelFull_price,hotelFull_orderN,hotelFull_feature, hotelFull_address, hotelFull_checkInOut,hotelFull_orderWeb]
     fullItem += [Items]
@@ -228,13 +245,6 @@ for go_link in range(len(HT_web_list)):
     wb_result.save(filename2)
     time.sleep(4)
 
-
-# for row in range(len(HT_name_list)):
-#     bank=[HT_name_list[row],HT_profile_list[row],HT_score_list[row],HT_people_list[row]]
-#     for addcol in range(0,6):
-#         bank += [fullItem[row][addcol]]
-#     ws_result.append(bank)
-# wb_result.save(filename2)
 driver.close()
 
 ###製作時間10分鐘(有參考資料)

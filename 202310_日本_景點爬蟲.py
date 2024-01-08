@@ -84,21 +84,34 @@ while for_sure=="n":
 
 #print(cityN,wordN)
 ############################################
-place_not_score = ["蟻丘之塔（あり塚の塔）","晚上の東京鐵塔","森之宮口噴水廣場","往有馬","大阪城坐船"]
+place_not_score = ["蟻丘之塔（あり塚の塔）","晚上の東京鐵塔","森之宮口噴水廣場","往有馬","大阪城坐船",
+                   "寄放"]
 ############################################
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 
-######################################################################################
+###################Chrome有頭爬蟲##########################################################
 s = Service(r"C:\chromedriver\chromedriver.exe")  # 驅動器位置(需確認chromedriver.exe放置的位置)
 option = webdriver.ChromeOptions()
 #option.add_argument("headless")  ##執行爬蟲時不開啟瀏覽器
-
+prefs = {
+    'profile.default_content_setting_values':{
+        'notifications':2
+    }
+}##2024/01/03出現通知許可時，設定為拒絕
 driver = webdriver.Chrome(service=s, options=option)
 driver.implicitly_wait(4)
-#############################################################################
+##################firefox無頭爬蟲############################################
+# s = Service("C:/geckodriver/geckodriver.exe")
+# option = webdriver.FirefoxOptions()
+# option.add_argument(argument="--headless")  ##執行爬蟲時不開啟瀏覽器
+# option.add_argument(argument="--no-sandbox")#2024/1/8不開瀏覽器爬蟲須追加
+# option.add_argument(argument='--disable-gpu')#2024/1/8不開瀏覽器爬蟲須追加
+# option.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")##避免被視為機器人
+# driver = webdriver.Firefox(service=s, options=option)
+###########################################################################
 from openpyxl import Workbook
 wb_result = Workbook()  ##建立Excel檔案
 wb_result.create_sheet(jp_cityName[cityN])
@@ -115,9 +128,7 @@ time.sleep(7)
 
 def scroll_times(times):
     for scrolltime in range(0, times + 1):
-        #driver.implicitly_wait(10)
         click_to_scroll=driver.find_element(By.XPATH, "/html/body/div[3]/div[8]/div[9]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]")
-        #driver.execute_script("arguments[0].click();", click_to_scroll)
         click_to_scroll.send_keys(Keys.END)
         time.sleep(5)
 scroll_times(4)
@@ -163,23 +174,27 @@ find_profile = "//div[@class='m6QErb WNBkOb ']/div[6]/button/div[2]/div[1]/div[1
 find_address1 = "//div[@class='m6QErb WNBkOb ']/div[16]/div[3]/button/div/div[2]/div[1]"
 find_address2 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[3]/button/div/div[2]/div[1]"
 find_address3 = "//div[@class='m6QErb WNBkOb ']/div[11]/div[3]/button/div/div[2]/div[1]"
-find_address4 = "//div[@class='m6QErb WNBkOb ']/div[7]/div[3]/button/div/div[2]/div[1]"
+find_address4 = "//div[@class='m6QErb WNBkOb ']/div[9]/div[3]/button/div/div[2]/div[1]"
+find_address5 = "//div[@class='m6QErb WNBkOb ']/div[7]/div[3]/button/div/div[2]/div[1]"
 ######
 find_ticket1 = "//div[@class='m6QErb WNBkOb ']/div[13]/div[2]/div/a/div[1]/div[2]"
 find_ticket2 = "//div[@class='m6QErb WNBkOb ']/div[12]/div[2]/div/a/div[1]/div[2]"
 find_ticket3 = "//div[@class='m6QErb WNBkOb ']/div[8]/div[2]/div/a/div[1]/div[2]"
 find_ticket4 = "//div[@class='m6QErb WNBkOb ']/div[8]/div[2]/div/a/div[1]/div[1]"
+find_ticket5 = "//div[@class='m6QErb WNBkOb ']/div[6]/div[2]/div/a/div[1]/div[2]"
 ######
 full_time1_click="//div[@class='m6QErb WNBkOb ']/div[15]/div[5]/div[1]/div[2]/div/span[2]"
 full_time1="//div[@class='m6QErb WNBkOb ']/div[15]/div[5]/div[2]/div/table/tbody"
 full_time2_click="//div[@class='m6QErb WNBkOb ']/div[16]/div[4]/div[1]/div[2]/div/span[2]"
 full_time2="//div[@class='m6QErb WNBkOb ']/div[16]/div[4]/div[2]/div/table/tbody"
-full_time4_click="//div[@class='m6QErb WNBkOb ']/div[11]/div[4]/div[1]/div[2]/div/span[2]"
-full_time4="//div[@class='m6QErb WNBkOb ']/div[11]/div[4]/div[2]/div/table/tbody"
-full_time5_click="//div[@class='m6QErb WNBkOb ']/div[11]/div[5]/div[1]/div[2]/div/span[2]"
-full_time5="//div[@class='m6QErb WNBkOb ']/div[11]/div[5]/div[2]/div/table/tbody"
 full_time3_click="//div[@class='m6QErb WNBkOb ']/div[7]/div[4]/div[1]/div[2]/div/span[2]"
 full_time3="//div[@class='m6QErb WNBkOb ']/div[7]/div[4]/div[2]/div/table/tbody"
+full_time4_click="//div[@class='m6QErb WNBkOb ']/div[9]/div[4]/div[1]/div[2]/div/span[2]"
+full_time4="//div[@class='m6QErb WNBkOb ']/div[9]/div[4]/div[2]/div/table/tbody"
+full_time5_click="//div[@class='m6QErb WNBkOb ']/div[11]/div[4]/div[1]/div[2]/div/span[2]"
+full_time5="//div[@class='m6QErb WNBkOb ']/div[11]/div[4]/div[2]/div/table/tbody"
+full_time6_click="//div[@class='m6QErb WNBkOb ']/div[11]/div[5]/div[1]/div[2]/div/span[2]"
+full_time6="//div[@class='m6QErb WNBkOb ']/div[11]/div[5]/div[2]/div/table/tbody"
 
 full_timeEnt_click="//div[@class='m6QErb WNBkOb ']/div[11]/div[4]/button"
 full_timeEnt_click_catch="//div[@class='m6QErb WNBkOb ']/div[2]/div[1]/div[2]/div/table/tbody"
@@ -187,14 +202,11 @@ full_timeEnt2_click="//div[@class='m6QErb WNBkOb ']/div[11]/div[5]/button"
 full_timeEnt2_click_catch="//div[@class='m6QErb WNBkOb ']/div[2]/div[1]/div[2]/div/table/tbody"
 
 pick_font = "//div[@id='QA0Szd']/div/div/div[1]/div[2]/div/div[1]"
-
-#pick_font="/html/body/div[3]/div[8]/div[9]/div/div/div[1]/div[2]/div/div[1]/div/div"
 rest_step_url="https://tw.yahoo.com/"
 def scroll_step():
     time.sleep(5)
     scroll_click=driver.find_element(By.XPATH, pick_font)
     scroll_click.send_keys(Keys.PAGE_DOWN)
-    #driver.execute_script("window.scrollBy(0, 500);")
     time.sleep(5)
 
 for go_link in range(len(PL_name_list)):
@@ -228,7 +240,11 @@ for go_link in range(len(PL_name_list)):
                     placeFull_ticket = driver.find_element(By.XPATH, find_ticket4)
                     placeFull_ticket = placeFull_ticket.text.replace("$", "").replace(",", "")
                 except NoSuchElementException:
-                    placeFull_ticket = "無顯示門票"
+                    try:
+                        placeFull_ticket = driver.find_element(By.XPATH, find_ticket5)
+                        placeFull_ticket = placeFull_ticket.text.replace("$", "").replace(",", "")
+                    except NoSuchElementException:
+                        placeFull_ticket = "無顯示門票"
 
     try:
         placeFull_address = driver.find_element(By.XPATH, find_address1)
@@ -246,7 +262,11 @@ for go_link in range(len(PL_name_list)):
                     placeFull_address = driver.find_element(By.XPATH, find_address4)
                     placeFull_address = placeFull_address.text
                 except NoSuchElementException:
-                    placeFull_address = "無顯示地址"
+                    try:
+                        placeFull_address = driver.find_element(By.XPATH, find_address5)
+                        placeFull_address = placeFull_address.text
+                    except NoSuchElementException:
+                        placeFull_address = "無顯示地址"
 
     time.sleep(5)
     driver.get(rest_step_url)
@@ -267,69 +287,64 @@ for go_link in range(len(PL_name_list)):
         placeFull_time = placeFull_time.text
     except NoSuchElementException:
         try:
-            #need_scroll()
+            need_scroll()
             clickto=driver.find_element(By.XPATH, full_time2_click)
             driver.execute_script("arguments[0].click();", clickto)
             placeFull_time = driver.find_element(By.XPATH, full_time2)
             placeFull_time = placeFull_time.text
         except NoSuchElementException:
             try:
-                #need_scroll()
+                need_scroll()
                 clickto=driver.find_element(By.XPATH, full_time3_click)
                 driver.execute_script("arguments[0].click();", clickto)
                 placeFull_time = driver.find_element(By.XPATH, full_time3)
                 placeFull_time = placeFull_time.text
             except NoSuchElementException:
                 try:
-                    #need_scroll()
+                    need_scroll()
                     clickto=driver.find_element(By.XPATH, full_time4_click)
                     driver.execute_script("arguments[0].click();", clickto)
                     placeFull_time = driver.find_element(By.XPATH, full_time4)
                     placeFull_time = placeFull_time.text
                 except NoSuchElementException:
                     try:
-                        #need_scroll()
+                        need_scroll()
                         clickto = driver.find_element(By.XPATH, full_time5_click)
                         driver.execute_script("arguments[0].click();", clickto)
                         placeFull_time = driver.find_element(By.XPATH, full_time5)
                         placeFull_time = placeFull_time.text
                     except NoSuchElementException:
                         try:
-                            #need_scroll()
-                            #scroll_step()
-                            clickto=driver.find_element(By.XPATH, full_timeEnt_click)
+                            need_scroll()
+                            clickto = driver.find_element(By.XPATH, full_time6_click)
                             driver.execute_script("arguments[0].click();", clickto)
-                            time.sleep(5)
-                            placeFull_time = driver.find_element(By.XPATH, full_timeEnt_click_catch)
+                            placeFull_time = driver.find_element(By.XPATH, full_time6)
                             placeFull_time = placeFull_time.text
                         except NoSuchElementException:
                             try:
-                                #need_scroll()
-                                #scroll_step()
-                                clickto=driver.find_element(By.XPATH, full_timeEnt2_click)
+                                need_scroll()
+                                clickto = driver.find_element(By.XPATH, full_timeEnt_click)
                                 driver.execute_script("arguments[0].click();", clickto)
                                 time.sleep(5)
-                                placeFull_time = driver.find_element(By.XPATH, full_timeEnt2_click_catch)
+                                placeFull_time = driver.find_element(By.XPATH, full_timeEnt_click_catch)
                                 placeFull_time = placeFull_time.text
                             except NoSuchElementException:
-                                placeFull_time = "無顯示時間"
+                                try:
+                                    need_scroll()
+                                    clickto = driver.find_element(By.XPATH, full_timeEnt2_click)
+                                    driver.execute_script("arguments[0].click();", clickto)
+                                    time.sleep(5)
+                                    placeFull_time = driver.find_element(By.XPATH, full_timeEnt2_click_catch)
+                                    placeFull_time = placeFull_time.text
+                                except NoSuchElementException:
+                                    placeFull_time = "無顯示時間"
 
-    # Items = [placeFull_profile, placeFull_ticket, placeFull_address, placeFull_time]
-    # fullItem += [Items]
-    #print(placeFull_profile+", "+placeFull_ticket+", "+placeFull_address+", "+placeFull_time)
     Items1=[PL_name_list[go_link],PL_score_list[go_link],PL_people_list[go_link],
             placeFull_profile, placeFull_ticket, placeFull_address, placeFull_time]
     ws_result.append(Items1)
     wb_result.save(filename)
     time.sleep(3)
     driver.implicitly_wait(20)
-
-# for row in range(len(PL_name_list)):
-#     bank=[PL_name_list[row],PL_score_list[row],PL_people_list[row]]
-#     for addcol in range(0,4):
-#         bank += [fullItem[row][addcol]]
-#     ws_result.append(bank)
-
 
 driver.close()
 print(datetime.now())
