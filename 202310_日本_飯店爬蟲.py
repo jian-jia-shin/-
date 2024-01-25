@@ -5,7 +5,7 @@ from selenium.webdriver import Keys
 
 jp_cityName = {1:"札幌",2:"東京",3:"橫濱",4:"名古屋",5:"京都",
             6:"奈良",7:"大阪",8:"神戶",9:"廣島",10:"沖繩"}
-city_search = {1:"札幌",2:"東京關東",3:"橫濱市",4:"名古屋",5:"京都府京都市",
+city_search = {1:"札幌",2:"東京",3:"橫濱市",4:"名古屋",5:"京都府京都市",
             6:"奈良",7:"大阪",8:"神戶",9:"廣島",10:"沖繩縣"}
 print(datetime.now())
 def choose_city():
@@ -93,7 +93,10 @@ def scroll_times(times):
         click_to_scroll=driver.find_element(By.XPATH, "/html/body/div[2]/div[3]/div[8]/div[9]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]")##2023/12/31更換路徑
         click_to_scroll.send_keys(Keys.END)
         time.sleep(7)
-scroll_times(5)
+try:
+    scroll_times(5)
+except:
+    print()
 hotel_name = driver.find_elements(By.XPATH, "//div[@class='Z8fK3b']/div[2]/div[1]")
 hotel_profile = driver.find_elements(By.XPATH,"//div[@class='y7PRA']/div/div[@class='Z8fK3b']/div[2]/div[4]")
 hotel_score = driver.find_elements(By.XPATH,"//div/div/div[2]/div[3]/div[@class='AJB7ye']/span[2]/span[@class='ZkP5Je']/span[1]")
@@ -138,12 +141,15 @@ find_feature = "//div[@class='m6QErb WNBkOb ']/div[11]/div[2]/div[2]"
 ####
 #find_price = "//div[@class='m6QErb ']/div[5]/div[2]/div/div[2]/div/div/a/div/div[1]/div/div"
 find_price = "//div[@class='m6QErb ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a/div/div[1]/div/div"
+find_price_next = "//div[@class='m6QErb ']/div[3]/div[3]/div[2]/div/div[2]/div/div/a/div/div[1]/div/div"##2024/01/21近期遇Booking.com詐騙事件，若為Booking.com則換為下一個訂房網站
 ####
 #find_orderN = "//div[@class='m6QErb ']/div[5]/div[2]/div/div[2]/div/div/a/div/div[1]/span[1]/span"
 find_orderN = "//div[@class='m6QErb ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a/div/div[1]/span[1]/span"
+find_orderN_next = "//div[@class='m6QErb ']/div[3]/div[3]/div[2]/div/div[2]/div/div/a/div/div[1]/span[1]/span"##2024/01/21近期遇Booking.com詐騙事件，若為Booking.com則換為下一個訂房網站
 ####
 #find_orderWeb= "//div[@class='m6QErb ']/div[5]/div[2]/div/div[2]/div/div/a"
 find_orderWeb= "//div[@class='m6QErb ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a"
+find_orderWeb_next= "//div[@class='m6QErb ']/div[3]/div[3]/div[2]/div/div[2]/div/div/a"##2024/01/21近期遇Booking.com詐騙事件，若為Booking.com則換為下一個訂房網站
 ####
 find_address1 = "//div[@class='m6QErb WNBkOb ']/div[11]/div[3]/button/div/div[2]/div[1]"##01/07新位置
 find_address2 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[3]/button/div/div[2]/div[1]"
@@ -180,22 +186,34 @@ for go_link in range(len(HT_web_list)):
         hotelFull_feature = "無顯示特色"
 
     try:
-        hotelFull_price = driver.find_element(By.XPATH, find_price)
-        hotelFull_price = hotelFull_price.text.replace("$","").replace(",","")
-    except NoSuchElementException:
-        hotelFull_price = "9999999999"
-
-    try:
-        hotelFull_orderN = driver.find_element(By.XPATH, find_orderN)
-        hotelFull_orderN = hotelFull_orderN.text
+        hotelFull_orderN = driver.find_element(By.XPATH, find_orderN)##若為Booking.com則換為下一個訂房網站
+        if hotelFull_orderN.text=="Booking.com":
+            hotelFull_orderN = driver.find_element(By.XPATH, find_orderN_next)
+            hotelFull_orderN = hotelFull_orderN.text
+        else:
+            hotelFull_orderN = hotelFull_orderN.text
     except NoSuchElementException:
         hotelFull_orderN = "無訂房資訊"
 
     try:
         hotelFull_orderWeb = driver.find_element(By.XPATH, find_orderWeb)
-        hotelFull_orderWeb = hotelFull_orderWeb.get_attribute('href')
+        if hotelFull_orderN=="Booking.com":
+            hotelFull_orderWeb = driver.find_element(By.XPATH, find_orderWeb_next)
+            hotelFull_orderWeb = hotelFull_orderWeb.get_attribute('href')
+        else:
+            hotelFull_orderWeb = hotelFull_orderWeb.get_attribute('href')
     except NoSuchElementException:
         hotelFull_orderWeb = "none"
+
+    try:
+        hotelFull_price = driver.find_element(By.XPATH, find_price)
+        if hotelFull_orderN == "Booking.com":
+            hotelFull_price = driver.find_element(By.XPATH, find_price_next)
+            hotelFull_price = hotelFull_price.text.replace("$", "").replace(",", "")
+        else:
+            hotelFull_price = hotelFull_price.text.replace("$","").replace(",","")
+    except NoSuchElementException:
+        hotelFull_price = "9999999999"
 
     try:
         hotelFull_address = driver.find_element(By.XPATH,find_address1)

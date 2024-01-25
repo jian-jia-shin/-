@@ -23,7 +23,7 @@ city_intro = {
 }
 
 city_wd_1 = ["觀光工廠","特色建築"]
-city_wd_2 = ["動漫","特色街區","傳統建築","百貨商場"]
+city_wd_2 = ["動漫","特色街區","傳統建築","日本東京百貨商場"]
 city_wd_3 = ["海灣景觀","中華街","風景公園","購物中心"]
 city_wd_4 = ["傳統建築","藝術文化","休閒場所"]
 city_wd_5 = ["傳統文化","美食料理","鄉村風光","溫泉"]
@@ -93,24 +93,24 @@ from selenium.webdriver.common.by import By
 import time
 
 ###################Chrome有頭爬蟲##########################################################
-s = Service(r"C:\chromedriver\chromedriver.exe")  # 驅動器位置(需確認chromedriver.exe放置的位置)
-option = webdriver.ChromeOptions()
+# s = Service(r"C:\chromedriver\chromedriver.exe")  # 驅動器位置(需確認chromedriver.exe放置的位置)
+# option = webdriver.ChromeOptions()
 #option.add_argument("headless")  ##執行爬蟲時不開啟瀏覽器
-prefs = {
-    'profile.default_content_setting_values':{
-        'notifications':2
-    }
-}##2024/01/03出現通知許可時，設定為拒絕
-driver = webdriver.Chrome(service=s, options=option)
-driver.implicitly_wait(4)
+# prefs = {
+#     'profile.default_content_setting_values':{
+#         'notifications':2
+#     }
+# }##2024/01/03出現通知許可時，設定為拒絕
+# driver = webdriver.Chrome(service=s, options=option)
+# driver.implicitly_wait(4)
 ##################firefox無頭爬蟲############################################
-# s = Service("C:/geckodriver/geckodriver.exe")
-# option = webdriver.FirefoxOptions()
-# option.add_argument(argument="--headless")  ##執行爬蟲時不開啟瀏覽器
-# option.add_argument(argument="--no-sandbox")#2024/1/8不開瀏覽器爬蟲須追加
-# option.add_argument(argument='--disable-gpu')#2024/1/8不開瀏覽器爬蟲須追加
-# option.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")##避免被視為機器人
-# driver = webdriver.Firefox(service=s, options=option)
+s = Service("C:/geckodriver/geckodriver.exe")
+option = webdriver.FirefoxOptions()
+option.add_argument(argument="--headless")  ##執行爬蟲時不開啟瀏覽器
+option.add_argument(argument="--no-sandbox")#2024/1/8不開瀏覽器爬蟲須追加
+option.add_argument(argument='--disable-gpu')#2024/1/8不開瀏覽器爬蟲須追加
+option.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")##避免被視為機器人
+driver = webdriver.Firefox(service=s, options=option)
 ###########################################################################
 from openpyxl import Workbook
 wb_result = Workbook()  ##建立Excel檔案
@@ -128,7 +128,7 @@ time.sleep(7)
 
 def scroll_times(times):
     for scrolltime in range(0, times + 1):
-        click_to_scroll=driver.find_element(By.XPATH, "/html/body/div[3]/div[8]/div[9]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]")
+        click_to_scroll = driver.find_element(By.XPATH,"/html/body/div[2]/div[3]/div[8]/div[9]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]")  ##2023/12/31更換路徑
         click_to_scroll.send_keys(Keys.END)
         time.sleep(5)
 scroll_times(4)
@@ -210,6 +210,7 @@ def scroll_step():
     time.sleep(5)
 
 for go_link in range(len(PL_name_list)):
+    print(PL_name_list[go_link])
     driver.get(rest_step_url)
     time.sleep(4)
     url = PL_web_list[go_link]
