@@ -26,25 +26,25 @@ if (living_days == 1):
 if (living_days == 2):
     nights = '2晚'
 
-add_closerJR=""
-closer_JR = int(input("需要靠近JR車站及地鐵嗎?\n(輸入1:是，輸入0:否)"))
-if closer_JR==1:
-    add_closerJR = "+近JR與地鐵"
-if closer_JR==0:
-    add_closerJR = ""
-
-add_with_breakfast=""
-with_breakfast = int(input("需要附早餐嗎?\n(輸入1:是，輸入0:否)"))
-if with_breakfast==1:
-    add_with_breakfast = "+附早餐"
-if with_breakfast==0:
-    add_with_breakfast = ""
+# add_closerJR=""
+# closer_JR = int(input("需要靠近JR車站及地鐵嗎?\n(輸入1:是，輸入0:否)"))
+# if closer_JR==1:
+#     add_closerJR = "+近JR與地鐵"
+# if closer_JR==0:
+#     add_closerJR = ""
+#
+# add_with_breakfast=""
+# with_breakfast = int(input("需要附早餐嗎?\n(輸入1:是，輸入0:否)"))
+# if with_breakfast==1:
+#     add_with_breakfast = "+附早餐"
+# if with_breakfast==0:
+#     add_with_breakfast = ""
 
 url=""
 if living_days ==1:
-    url="https://www.google.com/maps/search/日本+"+city_search[city]+"+飯店"+add_closerJR+add_with_breakfast+"/@34.9986042,135.7384476,15z/data=!3m1!4b1!4m7!2m6!5m4!5m3!1s"+dYear+"-"+dMonth+"-"+dDay+"!4m1!1i2!6e3?entry=ttu"
+    url="https://www.google.com/maps/search/日本+"+city_search[city]+"+飯店"+"/@34.9986042,135.7384476,15z/data=!3m1!4b1!4m7!2m6!5m4!5m3!1s"+dYear+"-"+dMonth+"-"+dDay+"!4m1!1i2!6e3?entry=ttu"
 if living_days ==2:
-    url="https://www.google.com/maps/search/日本+"+city_search[city]+"+飯店"+add_closerJR+add_with_breakfast+"/@34.9985699,135.7384476,15z/data=!3m1!4b1!4m8!2m7!5m5!5m4!1s"+dYear+"-"+dMonth+"-"+dDay+"!2i2!4m1!1i2!6e3?entry=ttu"
+    url="https://www.google.com/maps/search/日本+"+city_search[city]+"+飯店"+"/@34.9985699,135.7384476,15z/data=!3m1!4b1!4m8!2m7!5m5!5m4!1s"+dYear+"-"+dMonth+"-"+dDay+"!2i2!4m1!1i2!6e3?entry=ttu"
 
 ############################################
 from selenium import webdriver
@@ -52,11 +52,11 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 #############################################
-hotel_not_score = ["飯店","京都","沖繩","酒店"]
+hotel_not_score = ["飯店","京都","沖繩","酒店","東京飯店"]
 ###################Chrome有頭爬蟲##########################################################
 s = Service(r"C:\chromedriver\chromedriver.exe")  # 驅動器位置(需確認chromedriver.exe放置的位置)
 option = webdriver.ChromeOptions()
-#option.add_argument("headless")  ##執行爬蟲時不開啟瀏覽器
+# #option.add_argument("headless")  ##執行爬蟲時不開啟瀏覽器
 prefs = {
     'profile.default_content_setting_values':{
         'notifications':2
@@ -70,6 +70,7 @@ driver.implicitly_wait(4)
 # option.add_argument(argument="--headless")  ##執行爬蟲時不開啟瀏覽器
 # option.add_argument(argument="--no-sandbox")#2024/1/8不開瀏覽器爬蟲須追加
 # option.add_argument(argument='--disable-gpu')#2024/1/8不開瀏覽器爬蟲須追加
+# prefs = {'profile.default_content_setting_values':{'notifications':2}}##2024/01/03出現通知許可時，設定為拒絕
 # option.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")##避免被視為機器人
 # driver = webdriver.Firefox(service=s, options=option)
 ###################################################
@@ -137,30 +138,31 @@ for add1 in range(len(hotel_name)):
 #####################細部抓取#########################################
 
 fullItem = []
-find_feature = "//div[@class='m6QErb WNBkOb ']/div[11]/div[2]/div[2]"
+find_feature = "//div[@class='m6QErb WNBkOb XiKgde ']/div[11]/div[2]/div[2]"
+####(20240520路徑調整!!原本為div[@class='m6QErb WNBkOb ']改為div[@class='m6QErb WNBkOb XiKgde '])
+find_price = "//div[@class='m6QErb WNBkOb XiKgde ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a/div/div[1]/div/div"
+find_price_next = "//div[@class='m6QErb WNBkOb XiKgde ']/div[3]/div[3]/div[2]/div/div[2]/div/div/a/div/div[1]/div/div"##2024/01/21近期遇Booking.com詐騙事件，若為Booking.com則換為下一個訂房網站
 ####
-#find_price = "//div[@class='m6QErb ']/div[5]/div[2]/div/div[2]/div/div/a/div/div[1]/div/div"
-find_price = "//div[@class='m6QErb ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a/div/div[1]/div/div"
-find_price_next = "//div[@class='m6QErb ']/div[3]/div[3]/div[2]/div/div[2]/div/div/a/div/div[1]/div/div"##2024/01/21近期遇Booking.com詐騙事件，若為Booking.com則換為下一個訂房網站
+find_orderN = "//div[@class='m6QErb WNBkOb XiKgde ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a/div/div[1]/span[1]/span"
+find_orderN_next = "//div[@class='m6QErb WNBkOb XiKgde ']/div[3]/div[3]/div[2]/div/div[2]/div/div/a/div/div[1]/span[1]/span"##2024/01/21近期遇Booking.com詐騙事件，若為Booking.com則換為下一個訂房網站
 ####
-#find_orderN = "//div[@class='m6QErb ']/div[5]/div[2]/div/div[2]/div/div/a/div/div[1]/span[1]/span"
-find_orderN = "//div[@class='m6QErb ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a/div/div[1]/span[1]/span"
-find_orderN_next = "//div[@class='m6QErb ']/div[3]/div[3]/div[2]/div/div[2]/div/div/a/div/div[1]/span[1]/span"##2024/01/21近期遇Booking.com詐騙事件，若為Booking.com則換為下一個訂房網站
+find_orderWeb= "//div[@class='m6QErb WNBkOb XiKgde ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a"
+find_orderWeb_next= "//div[@class='m6QErb WNBkOb XiKgde ']/div[3]/div[3]/div[2]/div/div[2]/div/div/a"##2024/01/21近期遇Booking.com詐騙事件，若為Booking.com則換為下一個訂房網站
 ####
-#find_orderWeb= "//div[@class='m6QErb ']/div[5]/div[2]/div/div[2]/div/div/a"
-find_orderWeb= "//div[@class='m6QErb ']/div[3]/div[3]/div[1]/div/div[2]/div/div/a"
-find_orderWeb_next= "//div[@class='m6QErb ']/div[3]/div[3]/div[2]/div/div[2]/div/div/a"##2024/01/21近期遇Booking.com詐騙事件，若為Booking.com則換為下一個訂房網站
+find_address1 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[11]/div[3]/button/div/div[2]/div[1]"##01/07新位置
+find_address2 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[15]/div[3]/button/div/div[2]/div[1]"
+find_address3 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[15]/div[4]/button/div/div[2]/div[1]"
+find_address4 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[17]/div[3]/button/div/div[2]/div[1]"
+find_address_list=[find_address1,find_address2,find_address3,find_address4]
 ####
-find_address1 = "//div[@class='m6QErb WNBkOb ']/div[11]/div[3]/button/div/div[2]/div[1]"##01/07新位置
-find_address2 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[3]/button/div/div[2]/div[1]"
-find_address3 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[4]/button/div/div[2]/div[1]"
-find_address4 = "//div[@class='m6QErb WNBkOb ']/div[17]/div[3]/button/div/div[2]/div[1]"
-####
-find_checkIn_checkOut1 = "//div[@class='m6QErb WNBkOb ']/div[11]/div[7]/div[1]/div[2]/div[1]"##01/07新位置
-find_checkIn_checkOut2 = "//div[@class='m6QErb WNBkOb ']/div[11]/div[8]/div[1]/div[2]/div[1]"##01/07新位置
-find_checkIn_checkOut3 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[10]/div[1]/div[2]/div[1]"
-find_checkIn_checkOut4 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[8]/div[1]/div[2]/div[1]"
-find_checkIn_checkOut5 = "//div[@class='m6QErb WNBkOb ']/div[15]/div[9]/div[1]/div[2]/div[1]"
+find_checkIn_checkOut1 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[11]/div[7]/div[1]/div[2]/div[1]"##01/07新位置
+find_checkIn_checkOut2 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[11]/div[8]/div[1]/div[2]/div[1]"##01/07新位置
+find_checkIn_checkOut3 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[15]/div[7]/div[1]/div[2]/div[1]"##2024/05/08
+find_checkIn_checkOut4 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[15]/div[8]/div[1]/div[2]/div[1]"
+find_checkIn_checkOut5 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[15]/div[9]/div[1]/div[2]/div[1]"
+find_checkIn_checkOut6 = "//div[@class='m6QErb WNBkOb XiKgde ']/div[15]/div[10]/div[1]/div[2]/div[1]"
+find_checkInOut_list=[find_checkIn_checkOut1,find_checkIn_checkOut2,find_checkIn_checkOut3,
+                      find_checkIn_checkOut4,find_checkIn_checkOut5,find_checkIn_checkOut6]
 ####
 pick_font = "//div[@id='QA0Szd']/div/div/div[1]/div[2]/div/div[1]"
 rest_step_url="https://www.google.com/"
@@ -175,7 +177,7 @@ for go_link in range(len(HT_web_list)):
     time.sleep(4)
     url = HT_web_list[go_link]
     driver.get(url)
-    driver.implicitly_wait(20)
+    driver.implicitly_wait(12)
     time.sleep(4)
     scroll_step()
 
@@ -191,6 +193,7 @@ for go_link in range(len(HT_web_list)):
             hotelFull_orderN = driver.find_element(By.XPATH, find_orderN_next)
             hotelFull_orderN = hotelFull_orderN.text
         else:
+            hotelFull_orderN = driver.find_element(By.XPATH, find_orderN)
             hotelFull_orderN = hotelFull_orderN.text
     except NoSuchElementException:
         hotelFull_orderN = "無訂房資訊"
@@ -201,6 +204,7 @@ for go_link in range(len(HT_web_list)):
             hotelFull_orderWeb = driver.find_element(By.XPATH, find_orderWeb_next)
             hotelFull_orderWeb = hotelFull_orderWeb.get_attribute('href')
         else:
+            hotelFull_orderWeb = driver.find_element(By.XPATH, find_orderWeb)
             hotelFull_orderWeb = hotelFull_orderWeb.get_attribute('href')
     except NoSuchElementException:
         hotelFull_orderWeb = "none"
@@ -211,60 +215,44 @@ for go_link in range(len(HT_web_list)):
             hotelFull_price = driver.find_element(By.XPATH, find_price_next)
             hotelFull_price = hotelFull_price.text.replace("$", "").replace(",", "")
         else:
+            hotelFull_price = driver.find_element(By.XPATH, find_price)
             hotelFull_price = hotelFull_price.text.replace("$","").replace(",","")
     except NoSuchElementException:
         hotelFull_price = "9999999999"
 
-    try:
-        hotelFull_address = driver.find_element(By.XPATH,find_address1)
-        hotelFull_address = hotelFull_address.text
-    except NoSuchElementException:
+    for find_adr in range(len(find_address_list)):
         try:
-            hotelFull_address = driver.find_element(By.XPATH, find_address2)
+            hotelFull_address = driver.find_element(By.XPATH, find_address_list[find_adr])
             hotelFull_address = hotelFull_address.text
+            break
         except NoSuchElementException:
-            try:
-                hotelFull_address = driver.find_element(By.XPATH, find_address3)
-                hotelFull_address = hotelFull_address.text
-            except NoSuchElementException:
-                try:
-                    hotelFull_address = driver.find_element(By.XPATH, find_address4)
-                    hotelFull_address = hotelFull_address.text
-                except NoSuchElementException:
-                    hotelFull_address = "無顯示地點"
+            if find_adr == len(find_address_list) - 1:
+                hotelFull_address = "無顯示地點"
+                break
+            else:
+                continue
 
-    try:
-        hotelFull_checkInOut = driver.find_element(By.XPATH,find_checkIn_checkOut1)
-        hotelFull_checkInOut = hotelFull_checkInOut.text
-    except NoSuchElementException:
+    for find_checkIO in range(len(find_checkInOut_list)):
         try:
-            hotelFull_checkInOut = driver.find_element(By.XPATH, find_checkIn_checkOut2)
+            hotelFull_checkInOut = driver.find_element(By.XPATH, find_checkInOut_list[find_checkIO])
             hotelFull_checkInOut = hotelFull_checkInOut.text
+            break
         except NoSuchElementException:
-            try:
-                hotelFull_checkInOut = driver.find_element(By.XPATH, find_checkIn_checkOut3)
-                hotelFull_checkInOut = hotelFull_checkInOut.text
-            except NoSuchElementException:
-                try:
-                    hotelFull_checkInOut = driver.find_element(By.XPATH, find_checkIn_checkOut4)
-                    hotelFull_checkInOut = hotelFull_checkInOut.text
-                except NoSuchElementException:
-                    try:
-                        hotelFull_checkInOut = driver.find_element(By.XPATH, find_checkIn_checkOut5)
-                        hotelFull_checkInOut = hotelFull_checkInOut.text
-                    except NoSuchElementException:
-                        hotelFull_checkInOut = "無顯示入住、退房時間"
+            if find_checkIO == len(find_checkInOut_list) - 1:
+                hotelFull_checkInOut = "無顯示入住、退房時間"
+                break
+            else:
+                continue
 
-    Items = [hotelFull_price,hotelFull_orderN,hotelFull_feature, hotelFull_address, hotelFull_checkInOut,hotelFull_orderWeb]
-    fullItem += [Items]
     Item1=[HT_name_list[go_link],HT_profile_list[go_link],HT_score_list[go_link],HT_people_list[go_link],
            hotelFull_price,hotelFull_orderN,hotelFull_feature, hotelFull_address, hotelFull_checkInOut,hotelFull_orderWeb]
     ws_result.append(Item1)
     wb_result.save(filename2)
-    time.sleep(4)
+    time.sleep(3)
+    driver.implicitly_wait(12)
 
 driver.close()
-
+wb_result.save(filename2)
 ###製作時間10分鐘(有參考資料)
 ###程式執行時間5分鐘
 import pandas as pd
